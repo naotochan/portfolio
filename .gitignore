@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# tina generated
+tina/__generated__/
+
+# local task management
+tasks/
+
 # vercel
 .vercel
 

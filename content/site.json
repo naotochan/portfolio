@@ -1,0 +1,55 @@
+{
+  "navigation": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "About",
+      "href": "/about"
+    },
+    {
+      "label": "Projects",
+      "href": "/projects"
+    },
+    {
+      "label": "Apps",
+      "href": "/apps"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog"
+    },
+    {
+      "label": "Photography",
+      "href": "/photography"
+    },
+    {
+      "label": "Media Art",
+      "href": "/media-art"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact"
+    }
+  ],
+  "name": "7010",
+  "tagline": "Creative Technologist & Photographer, and so on",
+  "description": "Where technology meets art — through code, sound, installations, photography, and writing",
+  "email": "naoto.k70@gmail.com",
+  "availability": "Available for collaboration, creation, crafting",
+  "location": "Kimitsu, Chiba, Japan",
+  "timezone": "JST (UTC+9)",
+  "social": [
+    {
+      "label": "Patreon",
+      "url": "https://www.patreon.com/c/td7010",
+      "icon": "patreon"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@knao2489",
+      "icon": "youtube"
+    }
+  ]
+}

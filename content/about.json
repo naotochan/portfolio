@@ -1,0 +1,59 @@
+{
+  "headline": "About",
+  "tagline": "Exploring new expressions between code and creativity",
+  "portrait": "/images/portrait.jpg",
+  "bio": "I'm a creative technologist working at the intersection of technology and art, with \"making\" as the core of everything I do.\nDrawing on a foundation in computer science, I explore the full breadth of digital expression — from interactive installations and generative art to real-time graphics. I believe the most compelling work emerges where technical precision meets artistic intuition.\nIn an age where AI has become accessible to everyone, I actively embrace its possibilities to pursue forms of expression that were simply out of reach before. At the same time, I value the distinctly human sensibility that comes from lived experience — and this portfolio is a record of that journey, layer by layer.\nMy practice extends beyond the digital into the physical. Alongside my creative work, I also develop practical, everyday apps. Lately, I've been setting my sights even wider: building a creative space where children can discover the joy of making things for themselves.",
+  "skills": [
+    {
+      "category": "Creative Tools",
+      "items": [
+        "TouchDesigner",
+        "Processing",
+        "PolyNodes",
+        "Protean"
+      ]
+    },
+    {
+      "category": "Development & AI",
+      "items": [
+        "Python",
+        "Machine Learning",
+        "Generative AI"
+      ]
+    },
+    {
+      "category": "Hardware",
+      "items": [
+        "Arduino",
+        "Raspberry Pi"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "year": "2024",
+      "title": "AI-Assisted Creative Tools",
+      "description": "Developing tools that leverage AI for real-time creative expression and interactive installations."
+    },
+    {
+      "year": "2023",
+      "title": "Spatial Audio Installations",
+      "description": "Created immersive sound experiences using multi-channel audio and reactive visual systems."
+    },
+    {
+      "year": "2022",
+      "title": "Creative Coding Studio",
+      "description": "Founded independent practice focusing on generative art and interactive media."
+    },
+    {
+      "year": "2021",
+      "title": "Media Art Exhibitions",
+      "description": "Exhibited interactive installations at digital art festivals and galleries."
+    }
+  ],
+  "currentlyExploring": [
+    "Generative AI Art",
+    "Biofeedback Interfaces",
+    "Phisical and Robotics Art"
+  ]
+}

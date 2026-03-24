@@ -1,0 +1,18 @@
+{
+  "title": "Circular Wave with some effects",
+  "description": "This is an audio-reactive Circle Waves piece. As a bonus, several effects are applied during the post-processing stage.",
+  "date": "2026-02-27T00:00:00.000Z",
+  "tags": [
+    "Installation",
+    "TouchDesigner"
+  ],
+  "youtube": "yynxThngjEY",
+  "media": [
+    "/images/media-art/spatial-echoes-1.jpg"
+  ],
+  "tools": [
+    "TouchDesigner",
+    "AKAI LPD8"
+  ],
+  "exhibition": "None"
+}
