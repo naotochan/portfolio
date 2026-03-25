@@ -61,15 +61,24 @@ export function Navigation() {
 
   return (
     <>
-      {/* Desktop — minimal right side dots + labels on hover */}
-      <nav className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-end gap-4">
-        {/* Lang toggle */}
+      {/* Desktop — lang toggle top-left */}
+      <div className="fixed left-6 top-6 z-50 hidden md:flex items-center gap-1">
         <button
           onClick={toggleLang}
-          className="text-xs font-[family-name:var(--font-label)] tracking-wider text-on-surface-variant/50 hover:text-primary transition-colors mb-2"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-outline-variant/20 bg-surface/60 backdrop-blur-sm hover:border-primary/40 transition-all"
         >
-          {lang === "ja" ? "EN" : "JA"}
+          <span className={`text-xs font-[family-name:var(--font-label)] tracking-wider transition-colors ${lang === "ja" ? "text-primary" : "text-on-surface-variant/40"}`}>
+            JA
+          </span>
+          <span className="text-on-surface-variant/20 text-xs">/</span>
+          <span className={`text-xs font-[family-name:var(--font-label)] tracking-wider transition-colors ${lang === "en" ? "text-primary" : "text-on-surface-variant/40"}`}>
+            EN
+          </span>
         </button>
+      </div>
+
+      {/* Desktop — minimal right side dots + labels on hover */}
+      <nav className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-end gap-4">
         {navItems.map((item) => (
           <Link
             key={item.sectionId}
@@ -108,9 +117,11 @@ export function Navigation() {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleLang}
-              className="text-xs font-[family-name:var(--font-label)] tracking-wider text-on-surface-variant/50 hover:text-primary transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-outline-variant/20"
             >
-              {lang === "ja" ? "EN" : "JA"}
+              <span className={`text-xs font-[family-name:var(--font-label)] tracking-wider ${lang === "ja" ? "text-primary" : "text-on-surface-variant/40"}`}>JA</span>
+              <span className="text-on-surface-variant/20 text-xs">/</span>
+              <span className={`text-xs font-[family-name:var(--font-label)] tracking-wider ${lang === "en" ? "text-primary" : "text-on-surface-variant/40"}`}>EN</span>
             </button>
           <button
             onClick={() => setIsOpen(!isOpen)}

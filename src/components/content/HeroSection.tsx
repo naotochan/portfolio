@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ name, tagline, description }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[80vh] flex items-center px-8 py-24 overflow-hidden">
+    <section className="relative min-h-[50vh] flex items-center px-8 py-16 overflow-hidden">
       <ParticleBackground />
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         <div className="max-w-3xl">
