@@ -12,7 +12,7 @@ export default function ContactPage() {
       <section className="px-8 py-24">
         <div className="max-w-6xl mx-auto">
           <SectionHeader
-            title="Let's Create Something Together"
+            title="Let's Create Together"
             subtitle="Have a project in mind? I'd love to hear about it."
             gradient
           />

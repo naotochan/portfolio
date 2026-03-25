@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
+import { useLang } from "@/lib/i18n";
 
 const navItems = [
   { label: "Home", sectionId: "home", href: "/" },
@@ -19,6 +20,7 @@ export function Navigation() {
   const isHome = pathname === "/";
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const { lang, toggleLang } = useLang();
 
   useEffect(() => {
     if (!isHome) return;
@@ -61,6 +63,13 @@ export function Navigation() {
     <>
       {/* Desktop — minimal right side dots + labels on hover */}
       <nav className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col items-end gap-4">
+        {/* Lang toggle */}
+        <button
+          onClick={toggleLang}
+          className="text-xs font-[family-name:var(--font-label)] tracking-wider text-on-surface-variant/50 hover:text-primary transition-colors mb-2"
+        >
+          {lang === "ja" ? "EN" : "JA"}
+        </button>
         {navItems.map((item) => (
           <Link
             key={item.sectionId}
@@ -96,6 +105,13 @@ export function Navigation() {
           <Link href="/" className="font-[family-name:var(--font-headline)] text-lg font-bold text-primary">
             7010
           </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleLang}
+              className="text-xs font-[family-name:var(--font-label)] tracking-wider text-on-surface-variant/50 hover:text-primary transition-colors"
+            >
+              {lang === "ja" ? "EN" : "JA"}
+            </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="text-on-surface p-2"
@@ -109,6 +125,7 @@ export function Navigation() {
               )}
             </svg>
           </button>
+          </div>
         </div>
         {isOpen && (
           <div className="bg-surface/90 backdrop-blur-lg px-6 py-4 flex flex-col gap-1 border-t border-outline-variant/10">
