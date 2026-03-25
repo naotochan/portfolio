@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,19 +12,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    // For now, log the contact form submission
-    // Replace with Resend or other email service when ready
-    console.log("Contact form submission:", { name, email, subject, message });
-
-    // TODO: Integrate with email service
-    // Example with Resend:
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    // await resend.emails.send({
-    //   from: 'portfolio@yourdomain.com',
-    //   to: 'your@email.com',
-    //   subject: `[Portfolio] ${subject}: ${name}`,
-    //   text: `From: ${name} (${email})\n\n${message}`,
-    // });
+    await resend.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
+      to: "naoto.k70@gmail.com",
+      subject: `[Portfolio] ${subject}: ${name}`,
+      text: `From: ${name} (${email})\nSubject: ${subject}\n\n${message}`,
+      replyTo: email,
+    });
 
     return NextResponse.json({ success: true });
   } catch {
