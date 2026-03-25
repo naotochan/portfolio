@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -12,6 +10,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY is not set");
+      return NextResponse.json({ error: "Email service not configured" }, { status: 500 });
+    }
+
+    const resend = new Resend(apiKey);
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
       to: "naoto.k70@gmail.com",
