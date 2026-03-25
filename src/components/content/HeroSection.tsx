@@ -24,9 +24,6 @@ export function HeroSection({ name, tagline, description }: HeroSectionProps) {
           <p className="text-lg text-on-surface-variant leading-relaxed max-w-xl mb-10">
             {description}
           </p>
-          <div className="flex flex-wrap gap-4">
-            <Button href="/contact" variant="secondary">Get in Touch</Button>
-          </div>
         </div>
       </div>
     </section>
