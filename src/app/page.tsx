@@ -14,6 +14,8 @@ import { SkillBadge } from "@/components/content/SkillBadge";
 import { Button } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
 import { BilingualText } from "@/components/content/BilingualText";
+import { ContactForm } from "@/components/content/ContactForm";
+import { SocialLinks } from "@/components/content/SocialLinks";
 
 export default async function Home() {
   const site = getSiteConfig();
@@ -209,9 +211,14 @@ export default async function Home() {
 
       {/* Contact */}
       <section id="contact" className="px-8 py-16">
-        <div className="max-w-6xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto">
           <SectionHeader title="Contact" subtitle="Get in touch" />
-          <Button href="/contact">Send a Message</Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <ContactForm />
+            <div className="space-y-8">
+              <SocialLinks social={site.social} email={site.email} />
+            </div>
+          </div>
         </div>
       </section>
     </>
