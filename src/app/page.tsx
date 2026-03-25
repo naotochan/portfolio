@@ -13,6 +13,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { SkillBadge } from "@/components/content/SkillBadge";
 import { Button } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
+import { BilingualText } from "@/components/content/BilingualText";
 
 export default async function Home() {
   const site = getSiteConfig();
@@ -89,11 +90,11 @@ export default async function Home() {
             {/* Left: bio + skills + exploring */}
             <div className="md:col-span-2">
               <div className="mb-8">
-                {about.bio.split("\n\n").map((paragraph: string, i: number) => (
-                  <p key={i} className="text-on-surface-variant leading-relaxed mb-4 last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
+                <BilingualText
+                  ja={about.bio_ja ?? about.bio}
+                  en={about.bio}
+                  className="text-on-surface-variant leading-relaxed mb-4 last:mb-0"
+                />
               </div>
 
               <div className="space-y-6 mb-8">
