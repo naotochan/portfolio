@@ -1,6 +1,7 @@
 import { getSiteConfig, getAllBlogPosts, getAllApps, getAllPhotoSeries, getAllMediaArt, getAboutData } from "@/lib/content";
 import { getYouTubePlaylist } from "@/lib/youtube";
 import { getNoteArticles } from "@/lib/note";
+import { getPatreonPosts } from "@/lib/patreon";
 import { getPortfolioRepos } from "@/lib/github";
 import Image from "next/image";
 import { cloudinaryUrl } from "@/lib/cloudinary";
@@ -39,6 +40,7 @@ export default async function Home() {
 
   const mdxPosts = getAllBlogPosts();
   const noteArticles = await getNoteArticles();
+  const patreonPosts = await getPatreonPosts();
   const notePosts = noteArticles.map((a) => ({
     title: a.title,
     description: a.description,
@@ -47,9 +49,18 @@ export default async function Home() {
     externalUrl: a.url,
     source: "note" as const,
   }));
+  const patreonItems = patreonPosts.map((p) => ({
+    title: p.title,
+    description: p.description,
+    date: p.published,
+    tags: [] as string[],
+    externalUrl: p.url,
+    source: "patreon" as const,
+  }));
   const posts = [
     ...mdxPosts.map((p) => ({ ...p, externalUrl: undefined as undefined, source: undefined as undefined })),
     ...notePosts,
+    ...patreonItems,
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 6);
