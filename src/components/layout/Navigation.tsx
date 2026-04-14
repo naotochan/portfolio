@@ -10,7 +10,7 @@ const navItems = [
   { label: "About", sectionId: "about", href: "/about" },
   { label: "Media Art", sectionId: "media-art", href: "/media-art" },
   { label: "Photography", sectionId: "photography", href: "/photography" },
-  { label: "Blog", sectionId: "blog", href: "/blog" },
+  { label: "Posts", sectionId: "posts", href: "/blog" },
   { label: "Apps", sectionId: "apps", href: "/apps" },
   { label: "Contact", sectionId: "contact", href: "/contact" },
 ];
