@@ -180,10 +180,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Blog */}
-      <section id="blog" className="px-8 py-16">
+      {/* Posts */}
+      <section id="posts" className="px-8 py-16">
         <div className="max-w-6xl mx-auto">
-          <SectionHeader title="Blog" subtitle="Thoughts and explorations" />
+          <SectionHeader title="Posts" subtitle="Thoughts and explorations" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {posts.map((post) => (
               <BlogCard
