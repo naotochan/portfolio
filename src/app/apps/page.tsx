@@ -10,7 +10,7 @@ export default async function AppsPage() {
   const repoApps = repos.map((r) => ({
     title: r.name,
     description: r.description,
-    platform: r.language ?? "Open Source",
+    platform: r.platform,
     tags: r.topics,
     iconUrl: r.iconUrl,
     imageUrl: r.imageUrl,
