@@ -70,9 +70,10 @@ export default async function Home() {
   const repoApps = repos.map((r) => ({
     title: r.name,
     description: r.description,
-    platform: r.language ?? "Open Source",
+    platform: r.platform,
     tags: r.topics,
     iconUrl: r.iconUrl,
+    imageUrl: r.imageUrl,
     links: {
       github: r.url,
       ...(r.homepage ? { appStore: r.homepage } : {}),
