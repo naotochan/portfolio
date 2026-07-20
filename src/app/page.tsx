@@ -73,6 +73,7 @@ export default async function Home() {
     platform: r.language ?? "Open Source",
     tags: r.topics,
     iconUrl: r.iconUrl,
+    imageUrl: r.imageUrl,
     links: {
       github: r.url,
       ...(r.homepage ? { appStore: r.homepage } : {}),

@@ -1,5 +1,6 @@
 const GITHUB_USERNAME = "naotochan";
 const TOPIC = "portfolio-showcase";
+const PREVIEW_FILES = ["preview.jpg", "preview.png", "preview.webp"] as const;
 
 export interface GitHubRepo {
   name: string;
@@ -11,6 +12,27 @@ export interface GitHubRepo {
   stars: number;
   updatedAt: string;
   iconUrl: string | null;
+  imageUrl: string | null;
+}
+
+function rawUrl(name: string, branch: string, file: string) {
+  return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${name}/${branch}/${file}`;
+}
+
+async function resolvePreviewUrl(name: string, branch: string): Promise<string | null> {
+  for (const file of PREVIEW_FILES) {
+    const url = rawUrl(name, branch, file);
+    try {
+      const res = await fetch(url, {
+        method: "HEAD",
+        next: { revalidate: 3600 },
+      });
+      if (res.ok) return url;
+    } catch {
+      // try next candidate
+    }
+  }
+  return null;
 }
 
 export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
@@ -22,13 +44,20 @@ export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
     if (!res.ok) return [];
     const repos = await res.json();
 
-    return repos
+    const showcase = repos
       .filter((r: Record<string, unknown>) =>
         Array.isArray(r.topics) && (r.topics as string[]).includes(TOPIC)
       )
-      .map((r: Record<string, unknown>) => {
+      .sort((a: Record<string, unknown>, b: Record<string, unknown>) =>
+        new Date(b.updated_at as string).getTime() - new Date(a.updated_at as string).getTime()
+      );
+
+    return Promise.all(
+      showcase.map(async (r: Record<string, unknown>) => {
         const name = r.name as string;
         const branch = (r.default_branch as string) || "main";
+        const imageUrl = await resolvePreviewUrl(name, branch);
+
         return {
           name,
           description: (r.description as string) || "",
@@ -38,12 +67,11 @@ export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
           topics: ((r.topics as string[]) || []).filter((t) => t !== TOPIC),
           stars: (r.stargazers_count as number) || 0,
           updatedAt: r.updated_at as string,
-          iconUrl: `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${name}/${branch}/icon.png`,
+          iconUrl: rawUrl(name, branch, "icon.png"),
+          imageUrl,
         };
       })
-      .sort((a: GitHubRepo, b: GitHubRepo) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      );
+    );
   } catch {
     return [];
   }
