@@ -37,19 +37,6 @@ export function AppCard({
 
   return (
     <div className="bg-surface-container-low rounded-xl overflow-hidden hover:bg-surface-container-high transition-all hover:scale-[1.02] group">
-      {previewSrc && !imageError && (
-        <div className="aspect-video bg-surface-container-highest overflow-hidden">
-          <Image
-            src={previewSrc}
-            alt={`${title} preview`}
-            width={800}
-            height={450}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            onError={() => setImageError(true)}
-          />
-        </div>
-      )}
-
       <div className="p-6">
         {/* App icon */}
         <div className="w-16 h-16 rounded-2xl bg-surface-container-highest mb-4 overflow-hidden flex items-center justify-center">
@@ -87,6 +74,19 @@ export function AppCard({
         <p className="text-sm text-on-surface-variant mb-4 line-clamp-3">
           {description}
         </p>
+
+        {previewSrc && !imageError && (
+          <div className="aspect-video rounded-lg bg-surface-container-highest overflow-hidden mb-4">
+            <Image
+              src={previewSrc}
+              alt={`${title} preview`}
+              width={800}
+              height={450}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={() => setImageError(true)}
+            />
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-2 mb-4">
           {tags.map((tag) => (
