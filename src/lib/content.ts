@@ -96,8 +96,11 @@ export interface AppMeta {
   description: string;
   platform: string;
   tags: string[];
-  date: string;
-  image?: string;
+  date?: string;
+  /** GitHub repo name to merge with portfolio-showcase fetch (e.g. "pashatt") */
+  repo?: string;
+  image?: string | null;
+  iconUrl?: string;
   links?: {
     appStore?: string;
     playStore?: string;
@@ -117,7 +120,104 @@ export function getAllApps(): AppMeta[] {
       const raw = fs.readFileSync(path.join(dir, file), "utf-8");
       return JSON.parse(raw) as AppMeta;
     })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => {
+      const aTime = a.date ? new Date(a.date).getTime() : 0;
+      const bTime = b.date ? new Date(b.date).getTime() : 0;
+      return bTime - aTime;
+    });
+}
+
+export interface PortfolioAppCard {
+  title: string;
+  description: string;
+  platform: string;
+  tags: string[];
+  iconUrl?: string | null;
+  imageUrl?: string | null;
+  updatedAt?: string | null;
+  date?: string | null;
+  links?: {
+    appStore?: string;
+    playStore?: string;
+    github?: string;
+  };
+  featured?: boolean;
+}
+
+/** Append a version query so replaced files at the same GitHub URL bust Next/Image cache */
+function withImageCacheBust(url: string | null | undefined, version?: string | null) {
+  if (!url || !version) return url ?? null;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}v=${encodeURIComponent(version)}`;
+}
+
+/** Merge local content/apps overrides onto GitHub showcase repos (matched by `repo`). */
+export function mergePortfolioApps(
+  jsonApps: AppMeta[],
+  repos: {
+    name: string;
+    displayName: string;
+    description: string;
+    platform: string;
+    topics: string[];
+    iconUrl: string | null;
+    imageUrl: string | null;
+    updatedAt: string;
+    url: string;
+    homepage: string | null;
+  }[]
+): PortfolioAppCard[] {
+  const overrideByRepo = new Map(
+    jsonApps
+      .filter((app) => app.repo)
+      .map((app) => [app.repo!.toLowerCase(), app] as const)
+  );
+
+  const fromRepos: PortfolioAppCard[] = repos.map((r) => {
+    const override = overrideByRepo.get(r.name.toLowerCase());
+
+    return {
+      title: override?.title ?? r.displayName,
+      description: override?.description ?? r.description,
+      platform: override?.platform ?? r.platform,
+      tags: override?.tags ?? r.topics,
+      iconUrl: override?.iconUrl ?? r.iconUrl,
+      // Explicit `image: null` in content/apps suppresses the GitHub auto preview
+      imageUrl: withImageCacheBust(
+        override && Object.prototype.hasOwnProperty.call(override, "image")
+          ? override.image || null
+          : r.imageUrl,
+        r.updatedAt
+      ),
+      updatedAt: r.updatedAt,
+      date: override?.date ?? null,
+      featured: override?.featured,
+      links: {
+        github: override?.links?.github ?? r.url,
+        ...(override?.links?.appStore || r.homepage
+          ? { appStore: override?.links?.appStore ?? r.homepage ?? undefined }
+          : {}),
+        ...(override?.links?.playStore ? { playStore: override.links.playStore } : {}),
+      },
+    };
+  });
+
+  const standalone = jsonApps
+    .filter((app) => !app.repo)
+    .map((app) => ({
+      title: app.title,
+      description: app.description,
+      platform: app.platform,
+      tags: app.tags,
+      iconUrl: app.iconUrl ?? null,
+      imageUrl: app.image ?? null,
+      updatedAt: app.date ?? null,
+      date: app.date ?? null,
+      featured: app.featured,
+      links: app.links,
+    }));
+
+  return [...standalone, ...fromRepos];
 }
 
 // Photography

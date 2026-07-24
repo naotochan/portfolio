@@ -1,31 +1,13 @@
-import { getAllApps } from "@/lib/content";
+import { getAllApps, mergePortfolioApps } from "@/lib/content";
 import { getPortfolioRepos } from "@/lib/github";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AppCard } from "@/components/content/AppCard";
+import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
 
 export default async function AppsPage() {
   const jsonApps = getAllApps();
   const repos = await getPortfolioRepos();
-
-  const repoApps = repos.map((r) => ({
-    title: r.name,
-    description: r.description,
-    platform: r.platform,
-    tags: r.topics,
-    iconUrl: r.iconUrl,
-    imageUrl: r.imageUrl,
-    links: {
-      github: r.url,
-      ...(r.homepage ? { appStore: r.homepage } : {}),
-    },
-  }));
-
-  // JSON apps first, then GitHub repos (deduped by title)
-  const jsonTitles = new Set(jsonApps.map((a) => a.title.toLowerCase()));
-  const allApps = [
-    ...jsonApps,
-    ...repoApps.filter((r) => !jsonTitles.has(r.title.toLowerCase())),
-  ];
+  const allApps = mergePortfolioApps(jsonApps, repos);
 
   return (
     <div className="pt-12 md:pt-0 pb-32">
@@ -36,11 +18,13 @@ export default async function AppsPage() {
             subtitle="Mobile and desktop applications I've built"
             gradient
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <HorizontalCarousel label="Apps">
             {allApps.map((app) => (
-              <AppCard key={app.title} {...app} />
+              <HorizontalCarouselItem key={app.title}>
+                <AppCard {...app} />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
         </div>
       </section>
     </div>

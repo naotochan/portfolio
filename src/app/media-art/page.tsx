@@ -2,6 +2,7 @@ import { getAllMediaArt } from "@/lib/content";
 import { getYouTubePlaylist } from "@/lib/youtube";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { MediaArtCard } from "@/components/content/MediaArtCard";
+import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
 
 export default async function MediaArtPage() {
   const jsonWorks = getAllMediaArt();
@@ -35,11 +36,13 @@ export default async function MediaArtPage() {
             subtitle="Interactive installations, generative art, and audio-visual experiences"
             gradient
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <HorizontalCarousel label="Media Art">
             {allWorks.map((work) => (
-              <MediaArtCard key={work.youtube ?? work.title} {...work} />
+              <HorizontalCarouselItem key={work.youtube ?? work.title}>
+                <MediaArtCard {...work} />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
         </div>
       </section>
     </div>

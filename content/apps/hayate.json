@@ -1,0 +1,9 @@
+{
+  "title": "Hayate",
+  "repo": "Hayate",
+  "description": "ただひたすら RAW を選別するための macOS アプリ。キーボード操作で高速に選別し、書き出しまで一気に進めます。",
+  "platform": "macOS",
+  "tags": ["photography", "raw", "culling"],
+  "image": "https://raw.githubusercontent.com/naotochan/Hayate/main/preview.jpg",
+  "iconUrl": "https://raw.githubusercontent.com/naotochan/Hayate/main/icon.png"
+}

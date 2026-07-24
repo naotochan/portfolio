@@ -2,6 +2,7 @@ import { getAllBlogPosts } from "@/lib/content";
 import { getNoteArticles } from "@/lib/note";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BlogCard } from "@/components/content/BlogCard";
+import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
 
 export default async function BlogPage() {
   const mdxPosts = getAllBlogPosts();
@@ -30,20 +31,21 @@ export default async function BlogPage() {
             subtitle="Thoughts, tutorials, and creative coding explorations"
             gradient
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <HorizontalCarousel label="Posts">
             {allPosts.map((post) => (
-              <BlogCard
-                key={post.externalUrl ?? post.slug}
-                title={post.title}
-                description={post.description}
-                tags={post.tags}
-                date={post.date}
-                slug={"slug" in post ? post.slug : undefined}
-                externalUrl={post.externalUrl}
-                source={post.source}
-              />
+              <HorizontalCarouselItem key={post.externalUrl ?? post.slug}>
+                <BlogCard
+                  title={post.title}
+                  description={post.description}
+                  tags={post.tags}
+                  date={post.date}
+                  slug={"slug" in post ? post.slug : undefined}
+                  externalUrl={post.externalUrl}
+                  source={post.source}
+                />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
         </div>
       </section>
     </div>

@@ -150,11 +150,13 @@ export default defineConfig({
         format: "json",
         fields: [
           { type: "string", name: "title", label: "Title", required: true, isTitle: true },
+          { type: "string", name: "repo", label: "GitHub repo name (for merge, e.g. pashatt)" },
           { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
           { type: "string", name: "platform", label: "Platform (e.g. iOS / Android)" },
           { type: "string", name: "tags", label: "Tags", list: true },
           { type: "datetime", name: "date", label: "Date" },
-          { type: "image", name: "image", label: "App Icon" },
+          { type: "image", name: "image", label: "Preview / usage image" },
+          { type: "string", name: "iconUrl", label: "Icon URL (optional override)" },
           {
             type: "object",
             name: "links",
