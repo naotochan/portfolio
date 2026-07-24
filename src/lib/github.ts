@@ -2,6 +2,15 @@ const GITHUB_USERNAME = "naotochan";
 const TOPIC = "portfolio-showcase";
 const PREVIEW_FILES = ["preview.jpg", "preview.png", "preview.webp"] as const;
 const DEMO_IMAGE_RE = /\.(png|jpe?g|webp)$/i;
+const DEMO_PRIORITY = [
+  "usage.png",
+  "editor.png",
+  "preview.png",
+  "preview.jpg",
+  "preview.webp",
+  "demo.png",
+  "screenshot.png",
+] as const;
 
 /** GitHub topic → display label for target OS / platform */
 const PLATFORM_TOPIC_LABELS: Record<string, string> = {
@@ -66,21 +75,87 @@ function stripMarkdown(text: string) {
     .trim();
 }
 
+function normalizeRepoImagePath(src: string): string | null {
+  const trimmed = src.trim();
+  if (
+    !trimmed ||
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("//")
+  ) {
+    return null;
+  }
+  return trimmed.replace(/^\.\//, "");
+}
+
+async function headOk(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      next: { revalidate: 3600 },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function resolveReadmePreviewUrl(name: string, branch: string): Promise<string | null> {
+  try {
+    const res = await fetch(rawUrl(name, branch, "README.md"), {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+
+    const text = await res.text();
+    const beforeGallery = text.split(/^##\s+(Screenshots|スクリーンショット)/im)[0] ?? text;
+
+    const htmlImg = beforeGallery.match(/<img[^>]+src=["']([^"']+)["']/i);
+    const mdImg = beforeGallery.match(/!\[[^\]]*\]\(([^)]+)\)/);
+    const candidates = [htmlImg?.[1], mdImg?.[1]].filter(Boolean) as string[];
+
+    for (const src of candidates) {
+      const path = normalizeRepoImagePath(src);
+      if (!path) continue;
+      const url = rawUrl(name, branch, path);
+      if (await headOk(url)) return url;
+    }
+  } catch {
+    // no README preview
+  }
+
+  return null;
+}
+
+function pickDemoImage(
+  files: { name: string; download_url: string | null; type: string }[]
+): string | null {
+  const images = files.filter(
+    (f) => f.type === "file" && DEMO_IMAGE_RE.test(f.name) && f.download_url
+  );
+  if (images.length === 0) return null;
+
+  const byPriority = [...images].sort((a, b) => {
+    const aIndex = DEMO_PRIORITY.indexOf(a.name as (typeof DEMO_PRIORITY)[number]);
+    const bIndex = DEMO_PRIORITY.indexOf(b.name as (typeof DEMO_PRIORITY)[number]);
+    const aRank = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+    const bRank = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+    return aRank - bRank;
+  });
+
+  return byPriority[0]?.download_url ?? null;
+}
+
 async function resolvePreviewUrl(name: string, branch: string): Promise<string | null> {
   for (const file of PREVIEW_FILES) {
     const url = rawUrl(name, branch, file);
-    try {
-      const res = await fetch(url, {
-        method: "HEAD",
-        next: { revalidate: 3600 },
-      });
-      if (res.ok) return url;
-    } catch {
-      // try next candidate
-    }
+    if (await headOk(url)) return url;
   }
 
-  // Fallback: first image under docs/demo/ (e.g. SimpleSHOT's editor.png)
+  const readmePreview = await resolveReadmePreviewUrl(name, branch);
+  if (readmePreview) return readmePreview;
+
+  // Fallback: docs/demo/ (e.g. Flow usage.png, Pashatt editor.png)
   try {
     const res = await fetch(
       `https://api.github.com/repos/${GITHUB_USERNAME}/${name}/contents/docs/demo?ref=${branch}`,
@@ -88,10 +163,8 @@ async function resolvePreviewUrl(name: string, branch: string): Promise<string |
     );
     if (res.ok) {
       const files = (await res.json()) as { name: string; download_url: string | null; type: string }[];
-      const image = files.find(
-        (f) => f.type === "file" && DEMO_IMAGE_RE.test(f.name) && f.download_url
-      );
-      if (image?.download_url) return image.download_url;
+      const imageUrl = pickDemoImage(files);
+      if (imageUrl) return imageUrl;
     }
   } catch {
     // no docs/demo
