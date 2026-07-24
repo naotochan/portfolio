@@ -196,19 +196,19 @@ function resolvePlatform(topics: string[], description: string, name: string): s
 export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
   try {
     const res = await fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=created`,
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return [];
     const repos = await res.json();
 
-    // Oldest → newest (GitHub repository creation order)
+    // Newest update first
     const showcase = repos
       .filter((r: Record<string, unknown>) =>
         Array.isArray(r.topics) && (r.topics as string[]).includes(TOPIC)
       )
       .sort((a: Record<string, unknown>, b: Record<string, unknown>) =>
-        new Date(a.created_at as string).getTime() - new Date(b.created_at as string).getTime()
+        new Date(b.updated_at as string).getTime() - new Date(a.updated_at as string).getTime()
       );
 
     return Promise.all(
