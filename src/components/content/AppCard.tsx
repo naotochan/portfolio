@@ -25,10 +25,12 @@ interface AppCardProps {
 function formatAppDate(value: string) {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return null;
+  // Pin timezone so SSR (UTC) and the browser (often JST) render the same day
   return parsed.toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "Asia/Tokyo",
   });
 }
 
