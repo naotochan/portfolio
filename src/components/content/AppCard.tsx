@@ -76,13 +76,13 @@ export function AppCard({
         </p>
 
         {previewSrc && !imageError && (
-          <div className="aspect-video rounded-lg bg-surface-container-highest overflow-hidden mb-4">
+          <div className="aspect-[4/3] rounded-lg bg-surface-container-highest overflow-hidden mb-4">
             <Image
               src={previewSrc}
               alt={`${title} preview`}
               width={800}
-              height={450}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              height={600}
+              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
               onError={() => setImageError(true)}
             />
           </div>

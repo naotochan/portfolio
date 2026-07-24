@@ -8,6 +8,7 @@ import { cloudinaryUrl } from "@/lib/cloudinary";
 import { HeroSection } from "@/components/content/HeroSection";
 import { BlogCard } from "@/components/content/BlogCard";
 import { AppCard } from "@/components/content/AppCard";
+import { AppsCarousel, AppsCarouselItem } from "@/components/content/AppsCarousel";
 import { PhotoSeriesCard } from "@/components/content/PhotoSeriesCard";
 import { MediaArtCard } from "@/components/content/MediaArtCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -68,7 +69,7 @@ export default async function Home() {
   const jsonApps = getAllApps();
   const repos = await getPortfolioRepos();
   const repoApps = repos.map((r) => ({
-    title: r.name,
+    title: r.displayName,
     description: r.description,
     platform: r.platform,
     tags: r.topics,
@@ -83,7 +84,7 @@ export default async function Home() {
   const apps = [
     ...jsonApps,
     ...repoApps.filter((r) => !jsonAppTitles.has(r.title.toLowerCase())),
-  ].slice(0, 4);
+  ];
 
   return (
     <>
@@ -209,11 +210,13 @@ export default async function Home() {
       <section id="apps" className="px-8 py-16 bg-surface-container-low">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title="Apps" subtitle="Mobile and desktop applications" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AppsCarousel>
             {apps.map((app) => (
-              <AppCard key={app.title} {...app} />
+              <AppsCarouselItem key={app.title}>
+                <AppCard {...app} />
+              </AppsCarouselItem>
             ))}
-          </div>
+          </AppsCarousel>
           <div className="mt-8 text-center">
             <Button href="/apps" variant="tertiary">View All Apps →</Button>
           </div>

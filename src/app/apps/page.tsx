@@ -2,13 +2,14 @@ import { getAllApps } from "@/lib/content";
 import { getPortfolioRepos } from "@/lib/github";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AppCard } from "@/components/content/AppCard";
+import { AppsCarousel, AppsCarouselItem } from "@/components/content/AppsCarousel";
 
 export default async function AppsPage() {
   const jsonApps = getAllApps();
   const repos = await getPortfolioRepos();
 
   const repoApps = repos.map((r) => ({
-    title: r.name,
+    title: r.displayName,
     description: r.description,
     platform: r.platform,
     tags: r.topics,
@@ -36,11 +37,13 @@ export default async function AppsPage() {
             subtitle="Mobile and desktop applications I've built"
             gradient
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AppsCarousel>
             {allApps.map((app) => (
-              <AppCard key={app.title} {...app} />
+              <AppsCarouselItem key={app.title}>
+                <AppCard {...app} />
+              </AppsCarouselItem>
             ))}
-          </div>
+          </AppsCarousel>
         </div>
       </section>
     </div>
