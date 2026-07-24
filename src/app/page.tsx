@@ -1,4 +1,4 @@
-import { getSiteConfig, getAllBlogPosts, getAllApps, getAllPhotoSeries, getAllMediaArt, getAboutData } from "@/lib/content";
+import { getSiteConfig, getAllBlogPosts, getAllApps, getAllPhotoSeries, getAllMediaArt, getAboutData, mergePortfolioApps } from "@/lib/content";
 import { getYouTubePlaylist } from "@/lib/youtube";
 import { getNoteArticles } from "@/lib/note";
 import { getPatreonPosts } from "@/lib/patreon";
@@ -66,24 +66,7 @@ export default async function Home() {
 
   const jsonApps = getAllApps();
   const repos = await getPortfolioRepos();
-  const repoApps = repos.map((r) => ({
-    title: r.displayName,
-    description: r.description,
-    platform: r.platform,
-    tags: r.topics,
-    iconUrl: r.iconUrl,
-    imageUrl: r.imageUrl,
-    updatedAt: r.updatedAt,
-    links: {
-      github: r.url,
-      ...(r.homepage ? { appStore: r.homepage } : {}),
-    },
-  }));
-  const jsonAppTitles = new Set(jsonApps.map((a) => a.title.toLowerCase()));
-  const apps = [
-    ...jsonApps,
-    ...repoApps.filter((r) => !jsonAppTitles.has(r.title.toLowerCase())),
-  ];
+  const apps = mergePortfolioApps(jsonApps, repos);
 
   return (
     <>

@@ -91,7 +91,7 @@ export function AppCard({
           {title}
         </h3>
 
-        <p className="text-sm text-on-surface-variant mb-4 line-clamp-3">
+        <p className="text-sm text-on-surface-variant mb-4 line-clamp-4">
           {description}
         </p>
 
