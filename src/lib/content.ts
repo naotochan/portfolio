@@ -99,7 +99,7 @@ export interface AppMeta {
   date?: string;
   /** GitHub repo name to merge with portfolio-showcase fetch (e.g. "pashatt") */
   repo?: string;
-  image?: string;
+  image?: string | null;
   iconUrl?: string;
   links?: {
     appStore?: string;
@@ -175,7 +175,11 @@ export function mergePortfolioApps(
       platform: override?.platform ?? r.platform,
       tags: override?.tags ?? r.topics,
       iconUrl: override?.iconUrl ?? r.iconUrl,
-      imageUrl: override?.image ?? r.imageUrl,
+      // Explicit `image: null` in content/apps suppresses the GitHub auto preview
+      imageUrl:
+        override && Object.prototype.hasOwnProperty.call(override, "image")
+          ? override.image || null
+          : r.imageUrl,
       updatedAt: r.updatedAt,
       date: override?.date ?? null,
       featured: override?.featured,

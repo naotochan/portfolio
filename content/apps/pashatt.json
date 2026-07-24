@@ -4,7 +4,7 @@
   "description": "macOS 向けのスクリーンショット＆アノテーションツール。撮って、ちょっと注釈して、すぐ共有できる軽量アプリです。",
   "platform": "macOS",
   "tags": ["screenshot", "annotation", "tauri"],
-  "image": "https://raw.githubusercontent.com/naotochan/pashatt/main/docs/demo/editor.png",
+  "image": null,
   "iconUrl": "https://raw.githubusercontent.com/naotochan/pashatt/main/docs/brand/simpleshot-icon-1024.png",
   "featured": true
 }
