@@ -8,10 +8,10 @@ import { cloudinaryUrl } from "@/lib/cloudinary";
 import { HeroSection } from "@/components/content/HeroSection";
 import { BlogCard } from "@/components/content/BlogCard";
 import { AppCard } from "@/components/content/AppCard";
-import { AppsCarousel, AppsCarouselItem } from "@/components/content/AppsCarousel";
 import { PhotoSeriesCard } from "@/components/content/PhotoSeriesCard";
 import { MediaArtCard } from "@/components/content/MediaArtCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
 import { SkillBadge } from "@/components/content/SkillBadge";
 import { Button } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
@@ -34,10 +34,10 @@ export default async function Home() {
       tags: ["TouchDesigner"] as string[],
       youtube: v.videoId,
     }));
-  const mediaArt = [...jsonMediaArt, ...ytOnly]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 4);
-  const photos = getAllPhotoSeries().slice(0, 4);
+  const mediaArt = [...jsonMediaArt, ...ytOnly].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  const photos = getAllPhotoSeries();
 
   const mdxPosts = getAllBlogPosts();
   const noteArticles = await getNoteArticles();
@@ -62,9 +62,7 @@ export default async function Home() {
     ...mdxPosts.map((p) => ({ ...p, externalUrl: undefined as undefined, source: undefined as undefined })),
     ...notePosts,
     ...patreonItems,
-  ]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 6);
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const jsonApps = getAllApps();
   const repos = await getPortfolioRepos();
@@ -156,11 +154,13 @@ export default async function Home() {
       <section id="media-art" className="px-8 py-16">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title="Media Art" subtitle="Interactive installations and generative experiences" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <HorizontalCarousel label="Media Art">
             {mediaArt.map((work) => (
-              <MediaArtCard key={work.youtube ?? work.title} {...work} />
+              <HorizontalCarouselItem key={work.youtube ?? work.title}>
+                <MediaArtCard {...work} />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
           <div className="mt-8 text-center">
             <Button href="/media-art" variant="tertiary">View All Works →</Button>
           </div>
@@ -171,11 +171,13 @@ export default async function Home() {
       <section id="photography" className="px-8 py-16 bg-surface-container-low">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title="Photography" subtitle="Capturing moments through the lens" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <HorizontalCarousel label="Photography">
             {photos.map((s) => (
-              <PhotoSeriesCard key={s.title} {...s} />
+              <HorizontalCarouselItem key={s.title}>
+                <PhotoSeriesCard {...s} />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
           <div className="mt-8 text-center">
             <Button href="/photography" variant="tertiary">View All Photos →</Button>
           </div>
@@ -186,20 +188,21 @@ export default async function Home() {
       <section id="posts" className="px-8 py-16">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title="Posts" subtitle="Thoughts and explorations" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <HorizontalCarousel label="Posts">
             {posts.map((post) => (
-              <BlogCard
-                key={post.externalUrl ?? post.slug}
-                title={post.title}
-                description={post.description}
-                tags={post.tags}
-                date={post.date}
-                slug={"slug" in post ? post.slug : undefined}
-                externalUrl={post.externalUrl}
-                source={post.source}
-              />
+              <HorizontalCarouselItem key={post.externalUrl ?? post.slug}>
+                <BlogCard
+                  title={post.title}
+                  description={post.description}
+                  tags={post.tags}
+                  date={post.date}
+                  slug={"slug" in post ? post.slug : undefined}
+                  externalUrl={post.externalUrl}
+                  source={post.source}
+                />
+              </HorizontalCarouselItem>
             ))}
-          </div>
+          </HorizontalCarousel>
           <div className="mt-8 text-center">
             <Button href="/blog" variant="tertiary">Read More →</Button>
           </div>
@@ -210,13 +213,13 @@ export default async function Home() {
       <section id="apps" className="px-8 py-16 bg-surface-container-low">
         <div className="max-w-6xl mx-auto">
           <SectionHeader title="Apps" subtitle="Mobile and desktop applications" />
-          <AppsCarousel>
+          <HorizontalCarousel label="Apps">
             {apps.map((app) => (
-              <AppsCarouselItem key={app.title}>
+              <HorizontalCarouselItem key={app.title}>
                 <AppCard {...app} />
-              </AppsCarouselItem>
+              </HorizontalCarouselItem>
             ))}
-          </AppsCarousel>
+          </HorizontalCarousel>
           <div className="mt-8 text-center">
             <Button href="/apps" variant="tertiary">View All Apps →</Button>
           </div>

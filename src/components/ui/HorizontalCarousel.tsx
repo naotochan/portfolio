@@ -2,11 +2,16 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-interface AppsCarouselProps {
+interface HorizontalCarouselProps {
   children: ReactNode;
+  /** Accessible name for the carousel region */
+  label?: string;
 }
 
-export function AppsCarousel({ children }: AppsCarouselProps) {
+export function HorizontalCarousel({
+  children,
+  label = "Item carousel",
+}: HorizontalCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -27,27 +32,29 @@ export function AppsCarousel({ children }: AppsCarouselProps) {
     el.addEventListener("scroll", updateScrollState, { passive: true });
     const observer = new ResizeObserver(updateScrollState);
     observer.observe(el);
+    // Content width can change as images/embeds load
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
 
     return () => {
       el.removeEventListener("scroll", updateScrollState);
       observer.disconnect();
     };
-  }, []);
+  }, [children]);
 
   function scrollByCard(direction: -1 | 1) {
     const el = scrollerRef.current;
     if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-apps-carousel-item]");
+    const card = el.querySelector<HTMLElement>("[data-carousel-item]");
     const amount = (card?.offsetWidth ?? 320) + 24;
     el.scrollBy({ left: direction * amount, behavior: "smooth" });
   }
 
   return (
-    <div className="relative">
+    <div className="relative" role="region" aria-label={label}>
       {canScrollLeft && (
         <button
           type="button"
-          aria-label="Scroll apps left"
+          aria-label="Scroll left"
           onClick={() => scrollByCard(-1)}
           className="absolute left-0 top-1/2 z-10 hidden md:flex -translate-y-1/2 -translate-x-1 w-10 h-10 items-center justify-center rounded-full bg-surface-container-highest/90 text-on-surface border border-outline-variant/40 hover:bg-surface-bright transition-colors"
         >
@@ -57,7 +64,7 @@ export function AppsCarousel({ children }: AppsCarouselProps) {
       {canScrollRight && (
         <button
           type="button"
-          aria-label="Scroll apps right"
+          aria-label="Scroll right"
           onClick={() => scrollByCard(1)}
           className="absolute right-0 top-1/2 z-10 hidden md:flex -translate-y-1/2 translate-x-1 w-10 h-10 items-center justify-center rounded-full bg-surface-container-highest/90 text-on-surface border border-outline-variant/40 hover:bg-surface-bright transition-colors"
         >
@@ -75,13 +82,14 @@ export function AppsCarousel({ children }: AppsCarouselProps) {
   );
 }
 
-export function AppsCarouselItem({ children }: { children: ReactNode }) {
+export function HorizontalCarouselItem({ children }: { children: ReactNode }) {
   return (
     <div
-      data-apps-carousel-item
+      data-carousel-item
       className="w-[min(85vw,22rem)] shrink-0 snap-start"
     >
       {children}
     </div>
   );
 }
+
