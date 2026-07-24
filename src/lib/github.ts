@@ -95,8 +95,16 @@ async function resolvePreviewUrl(name: string, branch: string): Promise<string |
 }
 
 async function resolveIconUrl(name: string, branch: string): Promise<string | null> {
-  // Prefer app-bundle icons over a possibly stale root icon.png
-  for (const file of ["src-tauri/icons/icon.png", "icon.png"] as const) {
+  // Prefer newer bundle/brand icons over a possibly stale root icon.png
+  const candidates = [
+    "docs/brand/simpleshot-icon-1024.png",
+    "docs/brand/icon-1024.png",
+    "docs/brand/icon.png",
+    "src-tauri/icons/icon.png",
+    "icon.png",
+  ] as const;
+
+  for (const file of candidates) {
     const url = rawUrl(name, branch, file);
     try {
       const res = await fetch(url, {
@@ -107,26 +115,6 @@ async function resolveIconUrl(name: string, branch: string): Promise<string | nu
     } catch {
       // try next
     }
-  }
-
-  try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_USERNAME}/${name}/contents/docs/brand?ref=${branch}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (res.ok) {
-      const files = (await res.json()) as { name: string; download_url: string | null; type: string }[];
-      const icon = files.find(
-        (f) =>
-          f.type === "file" &&
-          /icon/i.test(f.name) &&
-          DEMO_IMAGE_RE.test(f.name) &&
-          f.download_url
-      );
-      if (icon?.download_url) return icon.download_url;
-    }
-  } catch {
-    // no docs/brand
   }
 
   return null;
