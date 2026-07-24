@@ -1,7 +1,7 @@
 import { getAllPhotoSeries } from "@/lib/content";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PhotoSeriesCard } from "@/components/content/PhotoSeriesCard";
-import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
+import { ContentGrid } from "@/components/ui/ContentGrid";
 
 export default function PhotographyPage() {
   const series = getAllPhotoSeries();
@@ -15,13 +15,11 @@ export default function PhotographyPage() {
             subtitle="Capturing moments, textures, and light through the lens"
             gradient
           />
-          <HorizontalCarousel label="Photography">
+          <ContentGrid>
             {series.map((s) => (
-              <HorizontalCarouselItem key={s.title}>
-                <PhotoSeriesCard {...s} />
-              </HorizontalCarouselItem>
+              <PhotoSeriesCard key={s.title} {...s} />
             ))}
-          </HorizontalCarousel>
+          </ContentGrid>
         </div>
       </section>
     </div>

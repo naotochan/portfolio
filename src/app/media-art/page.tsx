@@ -2,16 +2,14 @@ import { getAllMediaArt } from "@/lib/content";
 import { getYouTubePlaylist } from "@/lib/youtube";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { MediaArtCard } from "@/components/content/MediaArtCard";
-import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
+import { ContentGrid } from "@/components/ui/ContentGrid";
 
 export default async function MediaArtPage() {
   const jsonWorks = getAllMediaArt();
   const ytVideos = await getYouTubePlaylist();
 
-  // YouTube の videoId を持つ JSON エントリの ID を集める（重複排除用）
   const jsonVideoIds = new Set(jsonWorks.map((w) => w.youtube).filter(Boolean));
 
-  // YouTube プレイリストから、JSON に既に存在しないものだけ追加
   const ytOnly = ytVideos
     .filter((v) => !jsonVideoIds.has(v.videoId))
     .map((v) => ({
@@ -22,7 +20,6 @@ export default async function MediaArtPage() {
       youtube: v.videoId,
     }));
 
-  // JSON（手動）が先、YouTube 自動取得が後。全体を日付降順
   const allWorks = [...jsonWorks, ...ytOnly].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -36,13 +33,11 @@ export default async function MediaArtPage() {
             subtitle="Interactive installations, generative art, and audio-visual experiences"
             gradient
           />
-          <HorizontalCarousel label="Media Art">
+          <ContentGrid>
             {allWorks.map((work) => (
-              <HorizontalCarouselItem key={work.youtube ?? work.title}>
-                <MediaArtCard {...work} />
-              </HorizontalCarouselItem>
+              <MediaArtCard key={work.youtube ?? work.title} {...work} />
             ))}
-          </HorizontalCarousel>
+          </ContentGrid>
         </div>
       </section>
     </div>
