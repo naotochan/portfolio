@@ -5,6 +5,6 @@
   "platform": "macOS",
   "tags": ["screenshot", "annotation", "tauri"],
   "image": "https://raw.githubusercontent.com/naotochan/pashatt/main/docs/demo/editor.png",
-  "iconUrl": "https://raw.githubusercontent.com/naotochan/pashatt/main/icon.png",
+  "iconUrl": "https://raw.githubusercontent.com/naotochan/pashatt/main/docs/brand/simpleshot-icon-1024.png",
   "featured": true
 }

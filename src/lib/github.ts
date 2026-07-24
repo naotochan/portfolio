@@ -94,6 +94,44 @@ async function resolvePreviewUrl(name: string, branch: string): Promise<string |
   return null;
 }
 
+async function resolveIconUrl(name: string, branch: string): Promise<string | null> {
+  // Prefer app-bundle icons over a possibly stale root icon.png
+  for (const file of ["src-tauri/icons/icon.png", "icon.png"] as const) {
+    const url = rawUrl(name, branch, file);
+    try {
+      const res = await fetch(url, {
+        method: "HEAD",
+        next: { revalidate: 3600 },
+      });
+      if (res.ok) return url;
+    } catch {
+      // try next
+    }
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GITHUB_USERNAME}/${name}/contents/docs/brand?ref=${branch}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (res.ok) {
+      const files = (await res.json()) as { name: string; download_url: string | null; type: string }[];
+      const icon = files.find(
+        (f) =>
+          f.type === "file" &&
+          /icon/i.test(f.name) &&
+          DEMO_IMAGE_RE.test(f.name) &&
+          f.download_url
+      );
+      if (icon?.download_url) return icon.download_url;
+    }
+  } catch {
+    // no docs/brand
+  }
+
+  return null;
+}
+
 async function resolveDisplayMeta(
   name: string,
   branch: string,
@@ -218,8 +256,9 @@ export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
         const topics = ((r.topics as string[]) || []).filter((t) => t !== TOPIC);
         const fallbackDescription = (r.description as string) || "";
 
-        const [imageUrl, displayMeta] = await Promise.all([
+        const [imageUrl, iconUrl, displayMeta] = await Promise.all([
           resolvePreviewUrl(name, branch),
+          resolveIconUrl(name, branch),
           resolveDisplayMeta(name, branch, fallbackDescription),
         ]);
 
@@ -239,7 +278,7 @@ export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
           stars: (r.stargazers_count as number) || 0,
           createdAt: r.created_at as string,
           updatedAt: r.updated_at as string,
-          iconUrl: rawUrl(name, branch, "icon.png"),
+          iconUrl,
           imageUrl,
         };
       })
