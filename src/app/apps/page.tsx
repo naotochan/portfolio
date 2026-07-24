@@ -15,6 +15,7 @@ export default async function AppsPage() {
     tags: r.topics,
     iconUrl: r.iconUrl,
     imageUrl: r.imageUrl,
+    updatedAt: r.updatedAt,
     links: {
       github: r.url,
       ...(r.homepage ? { appStore: r.homepage } : {}),

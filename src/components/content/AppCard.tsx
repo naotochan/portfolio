@@ -12,12 +12,24 @@ interface AppCardProps {
   iconUrl?: string | null;
   imageUrl?: string | null;
   image?: string | null;
+  updatedAt?: string | null;
+  date?: string | null;
   links?: {
     appStore?: string;
     playStore?: string;
     github?: string;
   };
   featured?: boolean;
+}
+
+function formatAppDate(value: string) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export function AppCard({
@@ -28,12 +40,15 @@ export function AppCard({
   iconUrl,
   imageUrl,
   image,
+  updatedAt,
+  date,
   links,
   featured,
 }: AppCardProps) {
   const [iconError, setIconError] = useState(false);
   const [imageError, setImageError] = useState(false);
   const previewSrc = imageUrl ?? image;
+  const formattedDate = formatAppDate(updatedAt ?? date ?? "");
 
   return (
     <div className="bg-surface-container-low rounded-xl overflow-hidden hover:bg-surface-container-high transition-all hover:scale-[1.02] group">
@@ -56,7 +71,7 @@ export function AppCard({
           )}
         </div>
 
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex flex-wrap items-center gap-2 mb-2">
           {featured && (
             <span className="text-xs font-[family-name:var(--font-label)] text-secondary tracking-wider uppercase">
               Featured
@@ -65,6 +80,11 @@ export function AppCard({
           <span className="text-xs font-[family-name:var(--font-label)] text-on-surface-variant tracking-wider uppercase">
             {platform}
           </span>
+          {formattedDate && (
+            <span className="text-xs font-[family-name:var(--font-label)] text-on-surface-variant tracking-wider">
+              Updated {formattedDate}
+            </span>
+          )}
         </div>
 
         <h3 className="text-xl font-[family-name:var(--font-headline)] font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">
