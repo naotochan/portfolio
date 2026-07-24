@@ -1,7 +1,7 @@
 import { getAllProjects } from "@/lib/content";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProjectCard } from "@/components/content/ProjectCard";
-import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
+import { ContentGrid } from "@/components/ui/ContentGrid";
 
 export default function ProjectsPage() {
   const projects = getAllProjects();
@@ -15,13 +15,11 @@ export default function ProjectsPage() {
             subtitle="A collection of things I've built and experiments I've run"
             gradient
           />
-          <HorizontalCarousel label="Projects">
+          <ContentGrid>
             {projects.map((project) => (
-              <HorizontalCarouselItem key={project.slug}>
-                <ProjectCard {...project} />
-              </HorizontalCarouselItem>
+              <ProjectCard key={project.slug} {...project} />
             ))}
-          </HorizontalCarousel>
+          </ContentGrid>
         </div>
       </section>
     </div>

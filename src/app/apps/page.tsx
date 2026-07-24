@@ -2,7 +2,7 @@ import { getAllApps, mergePortfolioApps } from "@/lib/content";
 import { getPortfolioRepos } from "@/lib/github";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AppCard } from "@/components/content/AppCard";
-import { HorizontalCarousel, HorizontalCarouselItem } from "@/components/ui/HorizontalCarousel";
+import { ContentGrid } from "@/components/ui/ContentGrid";
 
 export default async function AppsPage() {
   const jsonApps = getAllApps();
@@ -18,13 +18,11 @@ export default async function AppsPage() {
             subtitle="Mobile and desktop applications I've built"
             gradient
           />
-          <HorizontalCarousel label="Apps">
+          <ContentGrid>
             {allApps.map((app) => (
-              <HorizontalCarouselItem key={app.title}>
-                <AppCard {...app} />
-              </HorizontalCarouselItem>
+              <AppCard key={app.title} {...app} />
             ))}
-          </HorizontalCarousel>
+          </ContentGrid>
         </div>
       </section>
     </div>
