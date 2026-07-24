@@ -144,6 +144,13 @@ export interface PortfolioAppCard {
   featured?: boolean;
 }
 
+/** Append a version query so replaced files at the same GitHub URL bust Next/Image cache */
+function withImageCacheBust(url: string | null | undefined, version?: string | null) {
+  if (!url || !version) return url ?? null;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}v=${encodeURIComponent(version)}`;
+}
+
 /** Merge local content/apps overrides onto GitHub showcase repos (matched by `repo`). */
 export function mergePortfolioApps(
   jsonApps: AppMeta[],
@@ -176,10 +183,12 @@ export function mergePortfolioApps(
       tags: override?.tags ?? r.topics,
       iconUrl: override?.iconUrl ?? r.iconUrl,
       // Explicit `image: null` in content/apps suppresses the GitHub auto preview
-      imageUrl:
+      imageUrl: withImageCacheBust(
         override && Object.prototype.hasOwnProperty.call(override, "image")
           ? override.image || null
           : r.imageUrl,
+        r.updatedAt
+      ),
       updatedAt: r.updatedAt,
       date: override?.date ?? null,
       featured: override?.featured,

@@ -51,6 +51,12 @@ function rawUrl(name: string, branch: string, file: string) {
   return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${name}/${branch}/${file}`;
 }
 
+function withCacheBust(url: string | null, version: string | null | undefined): string | null {
+  if (!url || !version) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}v=${encodeURIComponent(version)}`;
+}
+
 function stripMarkdown(text: string) {
   return text
     .replace(/\*\*([^*]+)\*\*/g, "$1")
@@ -267,7 +273,7 @@ export async function getPortfolioRepos(): Promise<GitHubRepo[]> {
           createdAt: r.created_at as string,
           updatedAt: r.updated_at as string,
           iconUrl,
-          imageUrl,
+          imageUrl: withCacheBust(imageUrl, r.updated_at as string),
         };
       })
     );
